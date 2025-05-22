@@ -19,7 +19,7 @@ if [ -n "\$2" ]; then
 fi
 
 # 添加其他参数
-BUILD_COMMAND="${BUILD_COMMAND} --tag registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:${1} --platform=linux/amd64 . --push"
+BUILD_COMMAND="${BUILD_COMMAND} --tag sqlynx:${1} --platform=linux/amd64 ."
 
 # 执行构建命令
 echo "Executing command: ${BUILD_COMMAND}"
