@@ -1,0 +1,11 @@
+services:
+  sqlynx:    # 服务名称
+    container_name: sqlynx   # 容器名称
+    image: registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:3.7.0      # 使用的镜像
+    ports:
+      - "18888:18888/tcp"      # 端口映射
+    volumes:
+      - /apps/usr/sqlynx/log/:/apps/usr/sqlynx/linux/log/  # 日志挂载卷
+      - /apps/usr/sqlynx/data/:/apps/usr/sqlynx/linux/data/  # 数据挂载卷
+    restart: unless-stopped  # 容器重启策略（可选）
+    pull_policy: always
