@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-    - main
+    - sharks-king-patch-1
     paths:
     - docker-build
 jobs:
