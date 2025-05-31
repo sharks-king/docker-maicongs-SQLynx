@@ -13,6 +13,7 @@ jobs:
     steps:
     - name: Environmental inspections 
       run: | 
+        tree
         ls
         docker version
         docker compose version
