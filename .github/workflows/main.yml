@@ -13,10 +13,15 @@ jobs:
     steps:
     - name: Environmental inspections 
       run: | 
-        pwd
-        ls ./
         docker version
         docker compose version
+        pwd
+        ls ./
+        echo 0
+        ls ../
+        echo 1
+        ls ../../
+        echo 3
 
     - name: build
       run: |
