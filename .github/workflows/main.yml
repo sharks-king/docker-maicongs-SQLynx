@@ -14,7 +14,11 @@ jobs:
     - name: Environmental inspections 
       run: | 
         pwd
-        tree
-        ls
+        ls ./
         docker version
         docker compose version
+
+    - name: build
+      run: |
+       cd docker-build
+       bash -x build.sh 
