@@ -11,9 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Environmental inspections 
       run: | 
         ls
         docker version
         docker compose version
-      
-    
