@@ -3,30 +3,56 @@ on:
   push:
     branches:
     - sharks-king-patch-1
-#    paths:
-#    - docker-build/*
+
+#env:
+#  # Use docker.io for Docker Hub if empty
+#  REGISTRY: ghcr.io
+#  # github.repository as <account>/<repo>
+#  IMAGE_NAME: 
+
 jobs:
   docker-build:
     name: docker-build
     runs-on: ubuntu-latest
     
     steps:
-    - name: code pul
+    - name: Checkout repository
       uses: actions/checkout@v4
       
     - name: Environmental inspections
       run: | 
+        source docker-maicongs-SQLynx/docker-build/build-config.env
         docker version
         docker compose version
         pwd
         ls ./
-        echo 0
-        ls ../
-        echo 1
-        ls ../../
-        echo 3
-
     - name: docker build
       run: |
        cd docker-build
        bash -x build.sh 
+
+    # Login against a Docker registry except on PR
+    # https://github.com/docker/login-action
+    - name: Log into registry dockerhub & push
+      uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+      with:
+        #registry: 
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      run: | 
+        docker tag sqlynx:latest sharksking/sqlynx:latest
+        docker tag sqlynx:latest sharksking/sqlynx:${SQLYNX_VERSION}
+        docker push sharksking/sqlynx:latest
+        docker push sharksking/sqlynx:${SQLYNX_VERSION}
+
+    - name: Log into registry aliyun ACR & push
+      uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+      with:
+        registry: registry.cn-hangzhou.aliyuncs.com
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      run: | 
+        docker tag sqlynx:latest registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:latest
+        docker tag sqlynx:latest registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:${SQLYNX_VERSION}
+        docker push registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:latest
+        docker push registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:${SQLYNX_VERSION}
