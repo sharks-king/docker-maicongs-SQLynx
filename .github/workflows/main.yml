@@ -33,24 +33,26 @@ jobs:
 
     # Login against a Docker registry except on PR
     # https://github.com/docker/login-action
-    - name: Log into registry dockerhub & push
+    - name: Log into registry dockerhub
       uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
       with:
         #registry: 
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+    - name: Push into registry dockerhub
       run: | 
         docker tag sqlynx:latest sharksking/sqlynx:latest
         docker tag sqlynx:latest sharksking/sqlynx:${SQLYNX_VERSION}
         docker push sharksking/sqlynx:latest
         docker push sharksking/sqlynx:${SQLYNX_VERSION}
 
-    - name: Log into registry aliyun ACR & push
+    - name: Log into registry aliyun ACR
       uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
       with:
         registry: registry.cn-hangzhou.aliyuncs.com
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+    - name: Push into registry aliyun ACR
       run: | 
         docker tag sqlynx:latest registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:latest
         docker tag sqlynx:latest registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx:${SQLYNX_VERSION}
