@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Environmental inspections 
+    - name: code pul
+      uses: actions/checkout@v4
+      
+    - name: Environmental inspections
       run: | 
         docker version
         docker compose version
@@ -23,7 +26,7 @@ jobs:
         ls ../../
         echo 3
 
-    - name: build
+    - name: docker build
       run: |
        cd docker-build
        bash -x build.sh 
