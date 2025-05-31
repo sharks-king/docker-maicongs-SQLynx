@@ -21,11 +21,15 @@ jobs:
       
     - name: Environmental inspections
       run: | 
-        source docker-maicongs-SQLynx/docker-build/build-config.env
         docker version
         docker compose version
         pwd
         ls ./
+        tree 
+
+#    - name: Env
+#      run: |
+#        source docker-maicongs-SQLynx/docker-build/build-config.env
     - name: docker build
       run: |
        cd docker-build
