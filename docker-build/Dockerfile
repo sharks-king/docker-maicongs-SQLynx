@@ -13,13 +13,30 @@ ENV SQLYNX_START_SHELL=${SQLYNX_START_SHELL}
 WORKDIR /apps
 
 # 替换默认的 Alpine 镜像源为中国科技大学的镜像源
-RUN set -eux && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+# RUN set -eux && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 # 更新并安装必要的软件包，包括 bash、OpenJDK 8 JRE、wget、curl 等
 RUN set -x \
     && apk update -v \
-    && apk add --no-cache bash openjdk8-jre openjdk8-jre-lib wget curl iputils unzip zip \
-    && apk cache clean \
+    && apk add --no-cache \
+        bash \
+        openjdk8-jre \
+        openjdk8-jre-lib \
+        wget \
+        curl \
+        iputils \
+        unzip \
+        zip \
+        # 添加缺失的依赖库
+        alsa-lib \
+        freetype \
+        libgcc \
+        giflib \
+        libpng \
+        # 额外补充的兼容性库
+        libx11 \
+        libxtst \ 
+        fontconfig \       
     && rm -rf /var/cache/apk/*
 
 # 下载并解压 SQLynx 应用程序，并创建符号链接

@@ -1,0 +1,84 @@
+name: CI
+on:
+  push:
+    branches:
+      - sharks-king-patch-1
+
+env:
+  # 修正 Docker Hub 仓库地址格式
+  DOCKER_REGISTRY: docker.io/sharksking/sqlynx
+  # 定义阿里云仓库地址
+  ALIYUN_REGISTRY: registry.cn-hangzhou.aliyuncs.com/sql_studio/sqlynx
+
+jobs:
+  docker-build:
+    name: docker-build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Environmental inspections
+      run: | 
+        docker version
+        docker compose version
+        pwd
+        ls ./
+        tree 
+
+    # 从文件中加载环境变量并设置为全局可用
+    - name: Load build config
+      id: build-config
+      run: |
+        source ./docker-build/build-config.env
+        # 将 SQLYNX_VERSION 设置为输出变量
+        echo "SQLYNX_VERSION=$SQLYNX_VERSION" >> $GITHUB_ENV
+        # 打印验证
+        echo "Loaded SQLYNX_VERSION: $SQLYNX_VERSION"
+
+    - name: docker build
+      run: |
+        cd docker-build
+        bash -x build.sh 
+
+    # Docker Hub 推送
+    - name: Log into Docker Hub
+      uses: docker/login-action@v3
+      with:
+        registry: docker.io
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Push to Docker Hub
+      run: | 
+        # 检查版本变量是否设置
+        if [ -z "$SQLYNX_VERSION" ]; then
+          echo "::error::SQLYNX_VERSION is not set!"
+          exit 1
+        fi
+        
+        docker tag sqlynx:latest $DOCKER_REGISTRY:latest
+        docker tag sqlynx:latest $DOCKER_REGISTRY:$SQLYNX_VERSION
+        docker push $DOCKER_REGISTRY:latest
+        docker push $DOCKER_REGISTRY:$SQLYNX_VERSION
+
+    # 阿里云推送 - 使用独立凭据
+    - name: Log into Aliyun ACR
+      uses: docker/login-action@v3
+      with:
+        registry: registry.cn-hangzhou.aliyuncs.com
+        username: ${{ secrets.ALIYUN_ACR_USERNAME }}  # 需要单独配置
+        password: ${{ secrets.ALIYUN_ACR_PASSWORD }}  # 需要单独配置
+
+    - name: Push to Aliyun ACR
+      run: | 
+        if [ -z "$SQLYNX_VERSION" ]; then
+          echo "::error::SQLYNX_VERSION is not set!"
+          exit 1
+        fi
+        
+        docker tag sqlynx:latest $ALIYUN_REGISTRY:latest
+        docker tag sqlynx:latest $ALIYUN_REGISTRY:$SQLYNX_VERSION
+        docker push $ALIYUN_REGISTRY:latest
+        docker push $ALIYUN_REGISTRY:$SQLYNX_VERSION

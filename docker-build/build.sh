@@ -39,3 +39,6 @@ BUILD_COMMAND="${BUILD_COMMAND} --tag sqlynx:${SQLYNX_VERSION} --platform=linux/
 # 执行构建命令
 echo "Executing command: ${BUILD_COMMAND}"
 eval "${BUILD_COMMAND}"
+
+# 配置标签
+docker tag sqlynx:${SQLYNX_VERSION} sqlynx:latest
