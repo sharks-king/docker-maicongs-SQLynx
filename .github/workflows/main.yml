@@ -27,9 +27,9 @@ jobs:
         ls ./
         tree 
 
-#    - name: Env
-#      run: |
-#        source docker-maicongs-SQLynx/docker-build/build-config.env
+    - name: Env
+      run: |
+        source ./docker-build/build-config.env
     - name: docker build
       run: |
        cd docker-build
