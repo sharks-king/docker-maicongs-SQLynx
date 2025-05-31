@@ -9,7 +9,11 @@ jobs:
   docker-build:
     name: docker-build
     runs-on: ubuntu-latest
-    run: | 
-      ls 
+    
+    steps:
+      run: | 
+        ls
+        docker version
+        docker compose version
       
     
